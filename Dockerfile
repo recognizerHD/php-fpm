@@ -14,7 +14,12 @@ RUN apk update && apk add --no-cache \
     unzip \
     git \
     supervisor \
-    curl
+    curl \
+    && mkdir /etc/supervisor.d
+
+COPY ./supervisord.conf /etc/supervisord.conf
+COPY ./php-fpm.ini /etc/supervisor.d/
+COPY ./laravel-worker.ini /etc/supervisor.d/
 
 # Install extensions
 RUN docker-php-ext-install bz2 exif pdo_mysql pcntl tidy xml zip \
@@ -27,4 +32,6 @@ RUN docker-php-ext-install bz2 exif pdo_mysql pcntl tidy xml zip \
 # Expose port 9000 and start php-fpm server
 # EXPOSE 9000
 # Already exposed from
-CMD ["php-fpm"]
+# CMD ["php-fpm"]
+
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
