@@ -15,23 +15,36 @@ RUN apk update && apk add --no-cache \
     git \
     supervisor \
     curl \
-    && mkdir /etc/supervisor.d
+    && mkdir /etc/supervisor.d \
+    && mkdir /etc/cron.d/
 
 COPY ./supervisord.conf /etc/supervisord.conf
+COPY ./cron-jobs /etc/cron.d/cron-jobs
 COPY ./php-fpm.ini /etc/supervisor.d/
+#COPY ./cron.ini /etc/supervisor.d/
 COPY ./laravel-worker.ini /etc/supervisor.d/
 
 # Install extensions
 RUN docker-php-ext-install bz2 exif pdo_mysql pcntl tidy xml zip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd
+    && docker-php-ext-install gd \
+    && chmod 0755 /etc/cron.d/cron-jobs \
+    && crontab /etc/cron.d/cron-jobs \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Clear cache
 # RUN apk del tidyhtml-dev bzip2-dev libxslt-dev libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev
+# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Expose port 9000 and start php-fpm server
 # EXPOSE 9000
 # Already exposed from
 # CMD ["php-fpm"]
+#
+#ENTRYPOINT ["crond", "-d"]
+
+COPY recognizer-entrypoint.sh /usr/local/bin/
+RUN ln -s usr/local/bin/recognizer-entrypoint.sh / # backwards compat
+ENTRYPOINT ["recognizer-entrypoint.sh"]
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
