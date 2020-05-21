@@ -6,9 +6,14 @@ The notable differences from the base image are:
 * Added extensions: bz2 exif gd pdo_mysql pcntl tidy xml zip
 * Installed git
 * Installed supervisor
+* Runs Crond
+    * every minute runs laravel: 
+    ```
+    cd /var/www/ && php artisan schedule:run >> /dev/null 2>&1
+    ```
 * Runs supervisord that spawns:
     * php-fpm
-    * laravel queue:worker
+    * runs laravel: php artisan queue:worker
 
 
 ## How to use this image
