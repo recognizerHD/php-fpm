@@ -50,9 +50,9 @@ RUN docker-php-ext-install bz2 exif pdo_mysql pcntl tidy zip \
 #
 #ENTRYPOINT ["crond", "-d"]
 
-
 COPY recognizer-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/recognizer-entrypoint.sh / # backwards compat
+WORKDIR /var/www
 ENTRYPOINT ["recognizer-entrypoint.sh"]
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

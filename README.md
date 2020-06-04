@@ -22,3 +22,4 @@ This will run a laravel queue:worker. It is intended for Laravel already be inst
 Please visit [php:fpm-alpine](https://hub.docker.com/_/php) on how to use this image.
 
 # NOTE
+This image still creates the /var/www/html folder with the root as owner. Haven't figured out how to stop that. Too much trouble for what it's worth at this point. If anyone knows, let me know please :)
