@@ -1,4 +1,4 @@
-FROM php:7.4.6-fpm-alpine3.11
+FROM php:7.4.8-fpm-alpine3.12
 LABEL maintainer="Paul Warren"
 
 # Install dependencies
@@ -26,7 +26,7 @@ COPY ./laravel-worker.ini /etc/supervisor.d/
 
 # Install extensions
 # xml already loaded
-RUN docker-php-ext-install bz2 exif pdo_mysql pcntl tidy zip \
+RUN docker-php-ext-install bz2 exif pdo_mysql pcntl sockets tidy xsl zip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
     && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS \
