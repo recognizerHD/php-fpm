@@ -1,4 +1,4 @@
-FROM php:7.4.10-fpm-alpine3.12
+FROM php:7.4.14-fpm-alpine3.13
 LABEL maintainer="Paul Warren"
 
 # Install dependencies
@@ -19,9 +19,10 @@ RUN apk update && apk add --no-cache \
     && mkdir /etc/cron.d/
 
 COPY ./supervisord.conf /etc/supervisord.conf
+#COPY ./cron.ini /etc/supervisor.d/
 COPY ./cron-jobs /etc/cron.d/cron-jobs
 COPY ./php-fpm.ini /etc/supervisor.d/
-#COPY ./cron.ini /etc/supervisor.d/
+#COPY ./laravel-websockets.ini /etc/supervisor.d/
 COPY ./laravel-worker.ini /etc/supervisor.d/
 
 # Install extensions
@@ -35,7 +36,7 @@ RUN docker-php-ext-install bz2 exif pdo_mysql pcntl sockets tidy xsl zip \
     && apk del .phpize-deps \
     && docker-php-ext-enable redis \
     && chmod 0755 /etc/cron.d/cron-jobs \
-    && crontab /etc/cron.d/cron-jobs \
+    && crontab -u www-data /etc/cron.d/cron-jobs \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # https://stackoverflow.com/questions/37458287/how-to-run-a-cron-job-inside-a-docker-container
