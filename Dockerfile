@@ -1,4 +1,4 @@
-FROM php:7.4.14-fpm-alpine3.13
+FROM php:8.0.2-fpm-alpine3.13
 LABEL maintainer="Paul Warren"
 
 # Install dependencies
