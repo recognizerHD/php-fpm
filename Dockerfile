@@ -1,4 +1,5 @@
-FROM php:8.1.10-fpm-alpine3.15
+FROM php:8.2.8-fpm-alpine3.18
+#.2.10-fpm-alpine3.15
 LABEL maintainer="Paul Warren"
 
 # Install dependencies
@@ -15,6 +16,7 @@ RUN apk update && apk add --no-cache \
     git \
     supervisor \
     curl \
+    linux-headers \
     && mkdir /etc/supervisor.d \
     && mkdir /etc/cron.d/
 
